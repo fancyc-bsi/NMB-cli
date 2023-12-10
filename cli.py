@@ -346,7 +346,7 @@ class Engine:
     def __init__(self):
         self.key_bindings = KeyBindings()
         self.history = FileHistory('.hist.txt')
-        self.repo = "https://api.github.com/repos/mavedirra-01/pi-turtle/contents/modules"
+        self.repo = "https://api.github.com/repos/mavedirra-01/NMB-cli/contents/modules"
         self.ssh_manager = None
         self.module_manager = ModuleManager(
             repo_url=self.repo
