@@ -7,7 +7,6 @@
 # Dependencies: nmap
 # Inputs: target, scan_type
 # Help: [parameter] - Options are 'Quick Scan' or 'Intense Scan'
-# Logfile: /opt/pi-turtle/logs/nmap-quick.log
-# Silent: true/false -> or just dont include this flag
-# Follow_log: true -> optional
+# Logfile: logs/nmap-quick.log
+# Silent: true/false -> slient for if you don't want the results to clutter the terminal
 ```
