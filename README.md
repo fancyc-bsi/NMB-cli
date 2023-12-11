@@ -47,6 +47,7 @@ Each module should contain metadata comments at the top of the file, detailing i
 ### Example Module
 ```bash
 #!/bin/bash
+# Author: Connor Fancy
 # Dependencies: nmap
 # Inputs: target, scan_type
 # Help: scan_type - Options are 'QS' or 'IS'
