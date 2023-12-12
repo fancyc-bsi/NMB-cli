@@ -15,7 +15,6 @@ import os
 import subprocess
 import shutil
 import paramiko
-from paramiko import SSHClient
 from scp import SCPClient
 from getpass import getpass
 
@@ -251,6 +250,8 @@ class ModuleManager:
                 installed_modules.append(filename)
         return installed_modules
 
+
+
     def launch_module(self, module_name, args):
         module_path = os.path.join(self.modules_dir, module_name)
         if not os.path.exists(module_path):
@@ -272,12 +273,13 @@ class ModuleManager:
         if self.ssh_manager:  # Check if SSH session is active
             # Handle remote execution
             self.ssh_manager.transfer_file(module_path)
-            # Execute the command remotely
-            self.ssh_manager.transfer_file(module_path)
-            output = self.ssh_manager.run_remote_script(module_name, args)  # Get the decoded output
-            print(f"Saving results to {logfile_path}")
-            with open (logfile_path, 'w') as f:
-                f.write(output)
+            # Modify the command to redirect output to a logfile on the remote machine
+            remote_command = f"bash {self.remote_path}/{module_name} " + ' '.join(args) + f" > {logfile_path} 2>&1"
+            self.ssh_manager.ssh_client.exec_command(remote_command)
+            # Open a new tmux window to tail the logfile
+            local_tmux_command = f"tmux new-window -n '{module_name}' 'ssh {self.ssh_manager.username}@{self.ssh_manager.hostname} tail -f {logfile_path}'"
+            subprocess.Popen(local_tmux_command, shell=True)
+            print(f"Module {module_name} launched in a new tmux window.")
         else:
             # Handle local execution
             if is_silent and logfile_path and isinstance(logfile_path, str):
