@@ -36,6 +36,22 @@ class SSHModuleManager:
         password = getpass(f"Enter password for {self.username}@{self.hostname}: ")
         self.ssh_client.connect(self.hostname, username=self.username, password=password)
 
+    def add_ssh_key(self, public_key_path="/root/.ssh/id_rsa.pub"):
+        try:
+            with open(public_key_path, "r") as key_file:
+                public_key = key_file.read().strip()
+
+            command = f"echo '{public_key}' >> ~/.ssh/authorized_keys"
+            stdin, stdout, stderr = self.ssh_client.exec_command(command)
+            exit_status = stdout.channel.recv_exit_status()  # Blocking call
+            if exit_status == 0:
+                print("SSH key added successfully.")
+            else:
+                print(f"Error adding SSH key: {stderr.read().decode()}")
+
+        except Exception as e:
+            print(f"Error: {e}")
+
     def disconnect(self):
         if self.ssh_client:
             self.ssh_client.close()
